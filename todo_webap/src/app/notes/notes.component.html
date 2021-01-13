@@ -1,0 +1,84 @@
+<header>
+    <div class="pos-f-t">
+        <div id="mySidenav" [ngStyle]="{'width.px': widthExp}" class="sidenav">
+            <div class="bg-gradient px-3 py-3">
+                <h5 class="text-white">Filter</h5>
+            </div>
+            <a href="#" (click)="selectedColor('All')" ><span class="material-icons">done</span>
+                All</a>
+            <a href="#" *ngFor="let color of myColors" class="{{color}}" 
+                (click)="selectedColor(color)"><span class="material-icons">done</span> Select</a>
+
+        </div>
+        <div class="overlayout" id="overlayout" [ngClass]="opennav ? 'd-block' : ''" (click)="closeNavBar()">
+
+        </div>
+        <nav class="bg-gradient justify-content-start navbar navbar-dark">
+            <button class="navbar-toggler" type="button" (click)="openNavBar()">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <span class="font-weight-bold h5 mb-0 ml-3 text-white">Notes</span>
+        </nav>
+    </div>
+</header>
+<section class="mt-2">
+    <div class="container-fluid">
+        <div class="border p-2 shadow">
+            <div class="mb-2">
+                <form [formGroup]='saveNoteForm'>
+                    <textarea class="border-0 form-control" maxlength="1000" formControlName="textNote" name="textNote" ngModel rows="1"
+                        placeholder="Take a note"></textarea>
+                </form>
+            </div>
+            <div class="px-3" *ngIf="!saveNoteForm.get('textNote').invalid">
+                <div class="row">
+                    <div *ngFor="let color of myColors" class="col p-0">
+                        <span (click)="saveNote(color)" class="btn py-2 {{color}} rounded-0 w-100"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="mt-3">
+    <div class="container-fluid">
+        <div class="form-row">
+            <div class="col-custom pb-2" *ngFor="let note of myNotes | filterColor: selectc">
+                <div class="card {{note.color}}" (click)="editNote(note,mymodal)">
+                    <div class="card-body p-2 font-size-12 ">
+                        <p class="card-text mb-1">{{note.textNote}}</p>
+                        <div class="text-muted text-right">
+                            <small> {{note.date | date}}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</section>
+<ng-template #mymodal let-modal>
+    <form [formGroup]='editNoteForm'>
+        <div class="modal-header p-1 border-0">
+            <span (click)="removeNote(this.editNoteForm.get('_id').value)"  class="close" aria-label="Remove">
+                <span class="material-icons color--danger"> delete </span>
+            </span>
+        </div>
+        <div class="modal-body">
+            <div class="mb-2 ">
+
+                <textarea class="border-0 form-control" maxlength="1000" [(ngModel)]="textname" formControlName="textNote" name="textNote"
+                    ngModel rows="1" placeholder="Take a note"></textarea>
+            </div>
+            <div class="px-3" *ngIf="!editNoteForm.get('textNote').invalid">
+                <div class="row">
+                    <div *ngFor="let color of myColors" class="col p-0">
+                        <span (click)="updateNote(color)" class="btn py-2 {{color}} rounded-0 w-100"></span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </form>
+</ng-template>
